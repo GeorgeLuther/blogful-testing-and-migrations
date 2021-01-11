@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
+const ArticlesService = require('./articles-services')
 
 const app = express()
 
@@ -19,6 +20,14 @@ app.use(cors())
 app.get('/',(req,res)=>{
     res.send('Hello, world!')
 })
+
+app.get('/articles', (req, res, next) => {
+    ArticlesService.getAllArticles(req.app.get('db'))
+      .then(articles => {
+        res.json(articles)
+      })
+      .catch(next)
+  })
 
 app.use(function errorHandler(error, req, res, next){
     let response
